@@ -45,12 +45,18 @@ namespace IconChangerWPF
         private void endIcon_Drop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            endIconPath = files[0];
-            endIcon.Source = BitmapFromUri(new Uri(files[0]));
-            endIcon.Margin = new Thickness(14.0);
-            endIcon.Width = 50;
-            endIcon.Height = 50;
-            iconText.Text = "";
+            if (files[0].Substring(files[0].LastIndexOf(".")) != ".ico")
+            {
+                MessageBox.Show($"ICON musi mieć plik o rozszerzeniu .ico", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else {
+                endIconPath = files[0];
+                endIcon.Source = BitmapFromUri(new Uri(files[0]));
+                endIcon.Margin = new Thickness(14.0);
+                endIcon.Width = 50;
+                endIcon.Height = 50;
+                iconText.Text = "";
+            }
         }
 
         public static ImageSource BitmapFromUri(Uri source)
@@ -92,7 +98,7 @@ namespace IconChangerWPF
             }
             catch
             {
-                /* If app hasn't icon */
+                /* If app hasn't icon (it means default icon after compilation) */
                 smallIcon = IconHelper.GetBestFitIcon(IconHelper.ExtractIcon(@"%SystemRoot%\system32\imageres.dll", 11), new System.Drawing.Size(64, 64));
             }
             string path = @"D:\icon1.ico";
@@ -110,7 +116,7 @@ namespace IconChangerWPF
         {
             IconInjector.InjectIcon(appPath, endIconPath);
         }
-
+        #region Not-used methods
         private byte[] getBytesFromImage(Uri source)
         {
             using(MemoryStream ms = new MemoryStream())
@@ -120,5 +126,6 @@ namespace IconChangerWPF
                 return ms.ToArray();
             }
         }
+        #endregion
     }
 }

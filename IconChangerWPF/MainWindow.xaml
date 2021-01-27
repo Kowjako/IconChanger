@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IconChangerWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="215.863" WindowStyle="None" ResizeMode="NoResize" Width="382.868">
+        Title="MainWindow" WindowStartupLocation="CenterScreen" Height="215.863" WindowStyle="None" ResizeMode="NoResize" Width="382.868">
     <Window.Resources>
         <VisualBrush x:Key="dashBrush">
             <VisualBrush.Visual>
