@@ -108,7 +108,7 @@ namespace IconChangerWPF
 
         private void applyBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            IconInjector.InjectIcon(appPath, endIconPath);
         }
 
         private byte[] getBytesFromImage(Uri source)
