@@ -87,6 +87,7 @@ namespace IconChangerWPF
             Icon smallIcon;
             try
             {
+                /* If app has icon */
                 smallIcon = IconHelper.GetBestFitIcon(icons[0], new System.Drawing.Size(64, 64));
             }
             catch
