@@ -36,16 +36,16 @@ public class IconInjector
     [StructLayout(LayoutKind.Sequential)]
     private struct ICONDIRENTRY
     {
-        public byte Width;            // Ширина изображения в пискелях.
-        public byte Height;           // Высота изображения в пикселях.
-        public byte ColorCount;       // Глубина цвета изображения.(0 если >=8bpp)
-        public byte Reserved;         // Зарезервировано, должно быть 0
-        public ushort Planes;         // Цветовые плоскости
-        public ushort BitCount;       // Бит на пиксель
-        public int BytesInRes;   // Длина в байтах данных пикселя
-        public int ImageOffset;  // Смещение в файле, где начинаются данные пикселей.
+        public byte Width;            
+        public byte Height;           
+        public byte ColorCount;       
+        public byte Reserved;         
+        public ushort Planes;         
+        public ushort BitCount;      
+        public int BytesInRes;  
+        public int ImageOffset;  
     }
-    // Содержит ширину, высоту и битность растра, а также формат пикселей, информацию о цветовой таблице и разрешении. 
+   
     [StructLayout(LayoutKind.Sequential)]
     private struct BITMAPINFOHEADER
     {
@@ -61,7 +61,7 @@ public class IconInjector
         public uint ClrUsed;
         public uint ClrImportant;
     }
-    // Иконки в exe/dll  файлах хранятся в очень схожей структуре:
+   
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     private struct GRPICONDIRENTRY
     {
@@ -116,20 +116,18 @@ public class IconInjector
             
             GCHandle pinnedBytes = GCHandle.Alloc(fileBytes, GCHandleType.Pinned);
             instance.iconDir = (ICONDIR)Marshal.PtrToStructure(pinnedBytes.AddrOfPinnedObject(), typeof(ICONDIR));
-            // который сообщает нам, сколько изображений находится в файле ico. Для каждого изображения есть ICONDIRENTRY и связанные пиксельные данные
+           
             instance.iconEntry = new ICONDIRENTRY[instance.iconDir.Count - 1 + 1];
             instance.iconImage = new byte[instance.iconDir.Count - 1 + 1][];
-            // Первая ICONDIRENTRY будет сразу после ICONDIR, поэтому смещение к ней - это размер ICONDIR
+            
             var offset = Marshal.SizeOf(instance.iconDir);
-            // После прочтения ICONDIRENTRY мы делаем шаг вперед размером с ICONDIRENTRY          
+                 
             var iconDirEntryType = typeof(ICONDIRENTRY);
             var size = Marshal.SizeOf(iconDirEntryType);
             for (var i = 0; i <= instance.iconDir.Count - 1; i++)
             {
-                // Берем структуру
                 var entry = (ICONDIRENTRY)Marshal.PtrToStructure(new IntPtr(pinnedBytes.AddrOfPinnedObject().ToInt64() + offset), iconDirEntryType);
                 instance.iconEntry[i] = entry;
-                // Берем связанные пиксельные данные
                 instance.iconImage[i] = new byte[entry.BytesInRes - 1 + 1];
                 Buffer.BlockCopy(fileBytes, entry.ImageOffset, instance.iconImage[i], 0, entry.BytesInRes);
                 offset += size;
